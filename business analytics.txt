@@ -1,0 +1,190 @@
+Business Analytics Assignment
+Harshitha Sivakumar (1937036)
+1MAECO
+
+
+1. SELECT venueName, count(*) as number_of_matches FROM `bigquery-public-data.baseball.games_wide` group by venueName order by number_of_matches desc;
+
+Result:
+
+venueName			number_of_matches
+Chase Field			26521
+Coors Field			26166
+Target Field			26107
+Citi Field			26001
+Great American Ball Park	25973
+Turner Field			25927
+PETCO Park			25905
+Fenway Park			25880
+Wrigley Field			25810
+Miller Park			25772
+PNC Park			25741
+Safeco Field			25540
+Minute Maid Park		25512
+Rogers Centre			25481
+Tropicana Field			25321
+Nationals Park			25288
+Progressive Field		25282
+Globe Life Park in Arlington	25174
+Citizens Bank Park		25138
+AT&T Park			25136
+Marlins Park			25131
+Kauffman Stadium		25126
+Dodger Stadium			25029
+U.S. Cellular Field		24871
+Busch Stadium			24791
+Comerica Park			24643
+Oriole Park at Camden Yards	24642
+Angel Stadium of Anaheim	24590
+Yankee Stadium			24548
+Oakland Coliseum		24275
+Fort Bragg			297
+
+2. SELECT distinct venueName, venueCapacity FROM `bigquery-public-data.baseball.games_wide` where venueSurface = 'turf'
+
+Result:
+
+venueName		venueCapacity
+Tropicana Field		31042
+Rogers Centre		49282
+
+3.SELECT gameId, homeTeamName, awayTeamName FROM `bigquery-public-data.baseball.schedules` where status = 'canceled'
+
+Result:
+
+gameId					homeTeamName	awayTeamName	
+fbe41a8f-c36f-46f4-9775-3d454cba0491	Marlins		Braves
+
+4. SELECT homeTeamName, count(gameId) as games_count from `bigquery-public-data.baseball.games_wide` group by homeTeamName having count(gameId) > 50 order by games_count
+
+Result:
+
+homeTeamName	games_count
+American League	332
+Athletics	24275
+Yankees		24548
+Angels		24590
+Orioles		24642
+Tigers		24643
+Cardinals	24791
+White Sox	24871
+Dodgers		25029
+Royals		25126
+Marlins		25131
+Giants		25136
+Phillies	25138
+Rangers		25174
+Indians		25282
+Nationals	25288
+Rays		25321
+Blue Jays	25481
+Astros		25512
+Mariners	25540
+Padres		25573
+Pirates		25741
+Brewers		25772
+Cubs		25810
+Red Sox		25880
+Reds		25973
+Mets		26001
+Twins		26107
+Rockies		26166
+Braves		26224
+Diamondbacks	26521
+
+5. select * from `bigquery-public-data.baseball.schedules` where gameNumber = 2 and duration > '4:00'
+
+Result:
+
+Null
+
+6. SELECT sc.gameNumber, gw.homeTeamName, gw.awayTeamName FROM `bigquery-public-data.baseball.games_wide` gw left outer join `bigquery-public-data.baseball.schedules` sc on gw.gameId = sc.gameId where gw.homeFinalRuns = gw.awayFinalRuns group by sc.gameNumber, gw.homeTeamName, gw.awayTeamName
+
+Result :
+
+gameNumber	homeTeamName	awayTeamName
+1		Pirates		Cubs
+
+7. select gameId, avg(strikes) from `bigquery-public-data.baseball.games_wide` group by gameId limit 20;
+
+Result:
+
+gameId					f0_
+6dc681ea-0abc-457d-8b0a-a7c0daae412e	1.148734177
+f9d54bbf-7fa6-4665-b850-5f59f6f1a474	1.225308642
+1ec06d4d-93f2-4a73-8bda-d3a1e875cbe0	1.176829268
+04e34b05-d2c5-47f8-9a4b-4b0855668c3e	1.254071661
+450f94fd-6e2a-4b49-8247-c36214987ca2	1.233502538
+7c5f774b-f44d-4dca-8ad4-9d5936c454e7	1.190625
+5bbbd0ec-a8be-4d9d-ace3-816ee352744c	1.232638889
+873af90e-d93f-4195-ab6c-8855abd81570	1.271565495
+bddd838d-8297-413d-b656-70c995792730	1.341772152
+4c9c728d-26eb-4526-8253-9cdb785dba77	1.177966102
+3e25e986-46d1-4af9-9b9c-1a8d8b8b802a	1.103603604
+ac094965-0aeb-414f-862b-a40c4e099cce	1.0625
+76728b44-f34f-4c0b-ade7-b98e26871939	1.192857143
+c0a16323-7f9d-4a61-a9f4-81d5c391febf	1.182608696
+7c9914e0-70be-45b6-9a3f-d509b65d668c	1.291390728
+f3655f56-4c29-4d8b-932c-7379c73f4417	1.26128266
+4ea303c3-331b-4800-84eb-bdbec947d6e2	1.271375465
+89fda312-79f4-455d-8d99-0dde5264caa5	1.157142857
+74e99b23-6e75-4c8a-82e2-466c95de9b3f	1.263803681
+822cfa5a-c351-4539-b2f7-7c32f2a55a0d	1.238255034
+
+8. with median as (select gameId, max(strikes) as max_val, min(strikes) as min_val from `bigquery-public-data.baseball.games_wide` group by gameId) select gameId, (max_val+min_val)/2.0 as median_val from median limit 10;
+
+Result:
+
+gameId 					median_val
+dc42dfe7-d6dd-4831-a9ad-c1dcfc8f62af	1.5
+252e4911-b809-48b1-8a53-6fcfd1f4c26c	1.5
+50e37133-01e3-4080-a6b2-4f08e79c160f	1.5
+94dc70b6-3018-46ab-8775-defa223fcefa	1.5
+5d084e13-94fd-4995-b95a-4801ea3ed556	1.5
+2b567092-f257-41cf-8b07-d0536814bbab	1.5
+55928f78-bec9-47c2-b242-bac601b9a278	1.5
+93d9759b-6625-4809-951d-bd1d8e44a625	1.5
+8da7c889-0aa9-42a2-8537-97181cb1b56a	1.5
+b546b1b2-7288-4751-b15f-af0d1c9fa028	1.5
+
+9. SELECT sc.gameNumber, gw.homeTeamName, gw.awayTeamName, sc.status FROM `bigquery-public-data.baseball.games_wide` gw right join `bigquery-public-data.baseball.schedules` sc on gw.gameId = sc.gameId group by sc.gameNumber,gw.homeTeamName, gw.awayTeamName, sc.status limit 10
+
+Result:
+
+gameNumber	homeTeamName	awayTeamName	status
+1		Marlins		Cubs		closed
+1		Braves		Cubs		closed
+1		Phillies	Cubs		closed
+1		Diamondbacks	Cubs		closed
+1		Athletics	Cubs		closed
+1		Rockies		Cubs		closed
+1		Cardinals	Cubs		closed
+1		Pirates		Cubs		closed
+1		Giants		Cubs		closed
+1		Reds		Cubs		closed
+
+10. SELECT sc.gameNumber, gw.homeTeamName, gw.awayTeamName, gw.homeFinalRuns FROM `bigquery-public-data.baseball.games_wide` gw inner join `bigquery-public-data.baseball.schedules` sc on gw.gameId = sc.gameId where gw.homeFinalRuns > 10 group by sc.gameNumber, gw.homeTeamName, gw.awayTeamName, gw.homeFinalRuns limit 20
+
+Result:
+
+gameNumber	homeTeamName	awayTeamName	homeFinalRuns
+1		Rockies		Cubs		11
+1		Mets		Cubs		14
+1		Orioles		Rays		12
+1		Diamondbacks	Reds		11
+1		Nationals	Reds		12
+1		Rangers		Angels		15
+1		Astros		Angels		13
+1		Tigers		Astros		11
+1		Rangers		Astros		12
+1		Giants		Braves		13
+1		Brewers		Braves		11
+1		Dodgers		Braves		12
+1		Rockies		Giants		11
+1		Mariners	Padres		16
+1		Giants		Padres		13
+1		Athletics	Tigers		12
+1		Padres		Brewers		12
+1		Giants		Dodgers		12
+1		Blue Jays	Indians		17
+1		Brewers		Marlins		14
